@@ -1,0 +1,19 @@
+version: "3.7"
+
+volumes:
+  cafe-data:
+
+services:
+  postgres:
+    container_name: cafe-db
+    image: postgres:15.8-alpine3.20
+    restart: always
+    environment:
+      POSTGRES_USER: vst
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cafe-database
+    volumes:
+      - cafe-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
