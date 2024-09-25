@@ -1,11 +1,11 @@
 package org.example.DAO.CustomerDAO;
 
+import org.example.DAO.CRUDInterface;
 import org.example.model.Customer;
 
 import java.math.BigDecimal;
 
-public interface CustomerDao{
-    public void AddCustomer(Customer customer);
+public interface CustomerDao extends CRUDInterface<Customer> {
     public void updateDiscount(long id, BigDecimal discount);
-    public void deleteCustomer(long id);
+    public void deleteCustomerById(long id);
 }

@@ -1,6 +1,7 @@
 package org.example.model;
 
 import lombok.*;
+import org.example.DAO.OrderDAO.OrderDao;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,4 +16,13 @@ public class Order {
     private String customerLastName;
     private LocalDateTime orderDate;
     private BigDecimal totalPrice;
+
+    public Order(String customerFirstName, String customerLastName, LocalDateTime orderDate, BigDecimal totalPrice)
+    {
+        this.customerFirstName = customerFirstName;
+        this.customerLastName = customerLastName;
+        this.orderDate = orderDate;
+        this.totalPrice = totalPrice;
+    }
+
 }

@@ -1,5 +1,8 @@
 package org.example.DAO.PositionDAO;
 
-public interface PositionDao {
-    public void addPosition(String name);
+import org.example.DAO.CRUDInterface;
+import org.example.model.Position;
+
+public interface PositionDao extends CRUDInterface<Position> {
+    public void addPositionByName(String name);
 }

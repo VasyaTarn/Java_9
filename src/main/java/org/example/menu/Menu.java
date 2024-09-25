@@ -95,7 +95,7 @@ public class Menu {
 
         MenuItem newItem = new MenuItem(nameEn, nameOther, itemType, price);
 
-        menuItemDao.addMenuItem(newItem);
+        menuItemDao.save(newItem);
     }
 
     public static void menuItem2Execute()
@@ -122,7 +122,7 @@ public class Menu {
 
         Staff newStaff = new Staff(firstName, lastName, patronymic, phone, email, position);
 
-        staffDao.addStaff(newStaff);
+        staffDao.save(newStaff);
     }
 
     public static void menuItem3Execute()
@@ -208,7 +208,7 @@ public class Menu {
         System.out.print("Enter the customer ID to delete: ");
         long id = scanner.nextLong();
 
-        customerDao.deleteCustomer(id);
+        customerDao.deleteCustomerById(id);
     }
 
     public static void menuItem11Execute()

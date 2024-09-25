@@ -13,26 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemDaoImpl implements MenuItemDao{
-    public void addMenuItem(MenuItem item)
-    {
-        String sql =  "INSERT INTO public.MenuItems (name_en, name_other, item_type_id, price) " + "VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql))
-        {
-            ps.setString(1, item.getNameEn());
-            ps.setString(2, item.getNameOther());
-            ps.setLong(3, item.getItemType());
-            ps.setBigDecimal(4, item.getPrice());
-            ps.executeUpdate();
-
-            System.out.println("Menu item added successfully: " + item.getNameEn());
-        }
-        catch (ConnectionDBException | SQLException e)
-        {
-            System.err.println(e.getMessage());
-        }
-    }
-
+    @Override
     public void updatePriceByItemType(long itemType, BigDecimal newPrice) {
         String sql = "UPDATE public.MenuItems SET price = ? WHERE item_type_id = ?";
 
@@ -55,6 +37,7 @@ public class MenuItemDaoImpl implements MenuItemDao{
         }
     }
 
+    @Override
     public void deleteByItemType(long itemTypeId) {
         String sql = "DELETE FROM public.MenuItems WHERE item_type_id = ?";
 
@@ -76,6 +59,7 @@ public class MenuItemDaoImpl implements MenuItemDao{
         }
     }
 
+    @Override
     public List<MenuItem> getMenuItemsByType(long itemTypeId)
     {
         String sql = "SELECT item_id, name_en, name_other, item_type_id, price FROM public.MenuItems WHERE item_type_id = ?";
@@ -105,5 +89,114 @@ public class MenuItemDaoImpl implements MenuItemDao{
         }
 
         return menuItems;
+    }
+
+    @Override
+    public void save(MenuItem menuItem) {
+        String sql =  "INSERT INTO public.MenuItems (name_en, name_other, item_type_id, price) " + "VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql))
+        {
+            ps.setString(1, menuItem.getNameEn());
+            ps.setString(2, menuItem.getNameOther());
+            ps.setLong(3, menuItem.getItemType());
+            ps.setBigDecimal(4, menuItem.getPrice());
+            ps.executeUpdate();
+
+            System.out.println("Menu item added successfully: " + menuItem.getNameEn());
+        }
+        catch (ConnectionDBException | SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void saveMany(List<MenuItem> menuItems) {
+        String sql = "INSERT INTO public.MenuItems (name_en, name_other, item_type_id, price) VALUES (?, ?, ?, ?)";
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (MenuItem menuItem : menuItems) {
+                ps.setString(1, menuItem.getNameEn());
+                ps.setString(2, menuItem.getNameOther());
+                ps.setLong(3, menuItem.getItemType());
+                ps.setBigDecimal(4, menuItem.getPrice());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+        catch (ConnectionDBException | SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void update(MenuItem menuItem) {
+        String sql = "UPDATE public.MenuItems SET name_en = ?, name_other = ?, item_type_id = ?, price = ? WHERE item_id = ?";
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, menuItem.getNameEn());
+            ps.setString(2, menuItem.getNameOther());
+            ps.setLong(3, menuItem.getItemType());
+            ps.setBigDecimal(4, menuItem.getPrice());
+            ps.setLong(5, menuItem.getId());
+
+            ps.executeUpdate();
+        }
+        catch (ConnectionDBException | SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(MenuItem menuItem) {
+        String sql = "DELETE FROM public.MenuItems WHERE item_id = ?";
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, menuItem.getId());
+
+            ps.executeUpdate();
+        }
+        catch (ConnectionDBException | SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<MenuItem> findAll() {
+        String sql = "SELECT * FROM public.MenuItems";
+        List<MenuItem> menuItems = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet result = ps.executeQuery()) {
+
+            while (result.next()) {
+                MenuItem menuItem = new MenuItem(
+                        result.getString("name_en"),
+                        result.getString("name_other"),
+                        result.getLong("item_type_id"),
+                        result.getBigDecimal("price")
+                );
+                menuItem.setId(result.getLong("item_id"));
+                menuItems.add(menuItem);
+            }
+        }
+        catch (ConnectionDBException | SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
+
+        return menuItems;
+    }
+
+    @Override
+    public void deleteAll() {
+        String sql = "DELETE FROM public.MenuItems";
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+        catch (ConnectionDBException | SQLException e)
+        {
+            System.err.println(e.getMessage());
+        }
     }
 }

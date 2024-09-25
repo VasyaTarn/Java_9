@@ -14,4 +14,12 @@ public class OrderItem {
     private long itemId;
     private int quantity;
     private BigDecimal price;
+
+    public OrderItem(long orderId, long itemId, int quantity, BigDecimal price)
+    {
+        this.orderId = orderId;
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.price = price;
+    }
 }
